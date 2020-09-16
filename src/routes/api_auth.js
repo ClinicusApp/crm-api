@@ -10,7 +10,7 @@ const sgMail = require("@sendgrid/mail");
 const Users = require("../models/user_schema");
 const jwt = require("../utils/jwt");
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
 // Get User

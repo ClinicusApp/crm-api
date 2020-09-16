@@ -42,7 +42,7 @@ app.use(cors({
 const jwt = require("./src/utils/jwt");
 
 // SendGrid Email Configuration
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Routes
 app.use(require("./src/routes/api"));
