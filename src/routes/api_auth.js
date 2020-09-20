@@ -46,15 +46,15 @@ router.post("/login", async (req, res) => {
     }
   } else {
     // Invalid username
-    res.json({ result: "error", message: "Invalid username" });
+    res.json({ result: "error", message: "Invalid username", sended: req.body });
   }
 });
 
 // Registering a User
 router.post("/register", async (req, res) => {
+  console.log(req.body)
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
-
     const { first_name, last_name, email } = req.body;
     const token = jsonwebtoken.sign(
       { first_name, last_name, email },
