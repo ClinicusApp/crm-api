@@ -49,6 +49,6 @@ app.use(require("./src/routes/api"));
 
 // Opening the door
 const port = 8080;
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log("Server is running... on port " + port);
 });
