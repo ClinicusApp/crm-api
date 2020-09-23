@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Cors Configuration
-var allowedOrigins = ['http://localhost:3000',
+var allowedOrigins = ['https://clinicus.vercel.app', 'http://localhost:3000',
                       process.env.PROJECT_URL];
 app.use(cors({
   origin: function(origin, callback){
