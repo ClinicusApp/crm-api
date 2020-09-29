@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user_schema");
+const axios = require('axios');
 // new api endpoint start here
 
 // INDEX operation
@@ -32,11 +33,10 @@ router.get("/fetchUser/:level", async (req, res) => {
 //   }
 // });
 
-// UPDATE operation
-// Find By Id
-router.get("/fetchUser/:id", async (req, res) => {
+// Find By Level Users
+router.get("/fetchUser/:level", async (req, res) => {
   try {
-    let data = User.findById({ _id: req.params.id });
+    let data = User.find({ _id: req.params.level });
     res.json({
       result: "success",
       message: "Fetch Single data Successfully",
@@ -46,6 +46,7 @@ router.get("/fetchUser/:id", async (req, res) => {
     res.json({ result: "error", message: err.msg });
   }
 });
+
 
 // Then Update
 // router.put("/crud", async (req, res) => {

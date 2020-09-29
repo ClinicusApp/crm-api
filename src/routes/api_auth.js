@@ -18,9 +18,10 @@ router.get("/", (req, res) => {
 })
 
 // Get User
-router.get("/profile/id/:id", async (req, res) => { 
-  let doc = await Users.findOne({ _id: req.params.id });
+router.get("/profile/id/:id", (req, res) => { 
+  let doc = Users.findOne({ _id: req.params.id });
   res.json(doc);
+  res.send("Wellcome")
 });
 
 // Loging a User
@@ -52,6 +53,8 @@ router.post("/login", async (req, res) => {
     // Invalid username
     res.json({ result: "error", message: "Invalid username", sended: req.body });
   }
+  window.localStorage.setItem('profile', doc)
+  console.log(window.localStorage)
 });
 
 // Registering a User
