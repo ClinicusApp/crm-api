@@ -21,14 +21,14 @@ router.get("/profile/id/:id", async (req, res) => {
 
 // Loging a User
 router.post("/login", async (req, res) => {
-  let doc = await Users.findOne({ username: req.body.username });
+  let doc = await Users.findOne({ email: req.body.email });
   if (doc) {
     if (bcrypt.compareSync(req.body.password, doc.password)) {
       if (doc.status != "not_activated") {
         const payload = {
           id: doc._id,
           level: doc.level,
-          username: doc.username
+          email: doc.email
         };
 
         let token = jwt.sign(payload);
