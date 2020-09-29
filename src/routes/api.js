@@ -3,4 +3,5 @@ const router = express.Router()
 require("../utils/db")
 router.use(require("./api_auth"))
 router.use(require("./api_crud"))
+router.use(reqyure("./api_user"))
 module.exports = router
