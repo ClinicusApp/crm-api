@@ -36,7 +36,7 @@ router.get("/fetchUser/:level", async (req, res) => {
 // Find By Id
 router.get("/fetchUser/:id", async (req, res) => {
   try {
-    let data = await User.findById({ _id: req.params.id });
+    let data = User.findById({ _id: req.params.id });
     res.json({
       result: "success",
       message: "Fetch Single data Successfully",
