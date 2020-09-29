@@ -12,6 +12,10 @@ const jwt = require("../utils/jwt");
 
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Wellcome
+router.get("/", (req, res) => {
+  res.send("Wellcome")
+})
 
 // Get User
 router.get("/profile/id/:id", async (req, res) => { 
