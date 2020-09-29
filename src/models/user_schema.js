@@ -26,5 +26,5 @@ const schema = mongoose.Schema({
   created: { type: Date, default: Date.now }
 });
  
-schema.index({ username: 1 }, { unique: true });
+schema.index({ email: 1 }, { unique: true });
 module.exports = mongoose.model("users", schema);
