@@ -41,6 +41,7 @@ router.get("/fetchUser/:level", async (req, res) => {
       result: "success",
       message: "Fetch Single data Successfully",
       data: data,
+      reqParams: req.params,
     });
   } catch (err) {
     res.json({ result: "error", message: err.msg });
