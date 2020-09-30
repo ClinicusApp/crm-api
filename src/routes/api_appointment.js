@@ -1,7 +1,7 @@
 // Use this as a template
 const express = require("express");
 const router = express.Router();
-const Appointment = require("../models/crud_schema");
+const Appointment = require("../models/appointment_schema");
 // new api endpoint start here
 
 // INDEX operation
@@ -22,6 +22,8 @@ router.get("/appointment", async (req, res) => {
 router.post("/appointment", async (req, res) => {
   try {
     let doc = await Appointment.create(req.body);
+    console.log(doc)
+    console.log(req.body)
  
     res.json({
       result: "success",
