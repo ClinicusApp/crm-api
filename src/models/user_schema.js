@@ -23,7 +23,13 @@ const schema = mongoose.Schema({
   status: { data: String, type: String, default: "not_activate" },
   activated_token: { type: String, default: "" },
   level: { type: String, default: "staff" },
-  created: { type: Date, default: Date.now }
+  created: { type: Date, default: Date.now },
+  // identification props
+  RG: { type: String, default: "" },
+  CPF: { type: String, default: "" },
+
+  // professional props
+  CRP: { type: String, default: "" },
 });
  
 schema.index({ email: 1 }, { unique: true });
