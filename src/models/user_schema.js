@@ -22,6 +22,7 @@ const schema = mongoose.Schema({
   password: String,
   status: { data: String, type: String, default: "not_activate" },
   activated_token: { type: String, default: "" },
+  resetPasswordToken: { type: String, default: "" },
   level: { type: String, default: "staff" },
   created: { type: Date, default: Date.now },
 

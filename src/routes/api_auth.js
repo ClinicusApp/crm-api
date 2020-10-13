@@ -5,23 +5,25 @@ const formidable = require("formidable");
 const path = require("path");
 const fs = require("fs-extra");
 const jsonwebtoken = require("jsonwebtoken");
-const sgMail = require("@sendgrid/mail");
-
 const Users = require("../models/user_schema");
 const jwt = require("../utils/jwt");
 
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
+// const AWS = require("aws-sdk");
+// AWS.config.loadFromPath(".aws/credentials.json");
 
 // Wellcome
 router.get("/", (req, res) => {
-  res.send("Wellcome")
-})
+  res.send("Wellcome");
+});
 
 // Get User
-router.get("/profile/id/:id", (req, res) => { 
+router.get("/profile/id/:id", (req, res) => {
   let doc = Users.findOne({ _id: req.params.id });
   res.json(doc);
-  res.send("Wellcome")
+  res.send("Wellcome");
 });
 
 // Loging a User
@@ -33,7 +35,7 @@ router.post("/login", async (req, res) => {
         const payload = {
           id: doc._id,
           level: doc.level,
-          email: doc.email
+          email: doc.email,
         };
 
         let token = jwt.sign(payload);
@@ -42,7 +44,7 @@ router.post("/login", async (req, res) => {
       } else {
         return res.json({
           result: "error",
-          message: "Your need to activate account first"
+          message: "Your need to activate account first",
         });
       }
     } else {
@@ -51,15 +53,19 @@ router.post("/login", async (req, res) => {
     }
   } else {
     // Invalid username
-    res.json({ result: "error", message: "Invalid username", sended: req.body });
+    res.json({
+      result: "error",
+      message: "Invalid username",
+      sended: req.body,
+    });
   }
-  window.localStorage.setItem('profile', doc)
-  console.log(window.localStorage)
+  window.localStorage.setItem("profile", doc);
+  console.log(window.localStorage);
 });
 
 // Registering a User
 router.post("/register", async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     req.body.password = await bcrypt.hash(req.body.password, 8);
     const { first_name, last_name, email } = req.body;
@@ -109,7 +115,7 @@ router.get("/activation/:token", async (req, res) => {
   let token = req.params.token;
 
   if (token) {
-    jsonwebtoken.verify(token, "process.env.JWT_ACCOUNT_ACTIVATION", function(
+    jsonwebtoken.verify(token, "process.env.JWT_ACCOUNT_ACTIVATION", function (
       err,
       decoded
     ) {
@@ -120,7 +126,7 @@ router.get("/activation/:token", async (req, res) => {
     });
     let updatedFields = {
       status: "active",
-      activated_token: ""
+      activated_token: "",
     };
     let doc = await Users.findOneAndUpdate(
       { activated_token: token },
@@ -177,10 +183,12 @@ router.post("/password/reset", async (req, res) => {
   let expired_time = "60m";
   const { email } = req.body;
   Users.findOne({ email }, (err, user) => {
+    console.log(user);
     if (err || !user) {
       return res.json({
         result: "error",
-        message: "User with that email does not exist"
+        message:
+          "Email digitado incorreto ou não há nenhuma conta vinculado a ele. Confira o email digitado.",
       });
     }
 
@@ -188,22 +196,79 @@ router.post("/password/reset", async (req, res) => {
       { _id: user._id, name: user.first_name },
       "process.env.JWT_RESET_PASSWORD",
       {
-        expiresIn: expired_time
+        expiresIn: expired_time,
       }
     );
 
+    console.log(token, "token");
+
+
     const emailData = {
-      from: "admin@basicpos.io",
+      from: "clinicus.suporte@gmail.com",
       to: email,
       subject: `Password Reset link`,
       html: `
                 <h1>Please use the following link to reset your password</h1>
-                <a href="http://localhost:3000/password/reset/${token}">Reset passord link</p>
+                <a href="http://localhost:3000/recuperarsenha/${token}"><p>Reset passord link</p></a>
                 <hr />
                 <p>This link will expired in 60 minutes</p>
-                
-            `
+
+            `,
     };
+
+
+    // AWS Transactional Email
+    // const ses = new AWS.SES({ apiVersion: "2010-12-01" });
+
+    // const params = {
+    //   Destination: {
+    //     ToAddresses: [email], // Email address/addresses that you want to send your email
+    //   },
+    //   // ConfigurationSetName: <<ConfigurationSetName>>,
+    //   Message: {
+    //     Body: {
+    //       Html: {
+    //         // HTML Format of the email
+    //         Charset: "UTF-8",
+    //         Data: `
+    //           <html>
+    //             <body>
+    //             <h1>Clinicus - Recuperação de Senha</h1>
+    //             <hr/>
+    //             <p>Para recuperar senha de sua conta acesse o link abaixo.</p>
+    //             <a href="http://localhost:3000/recuperarsenha/${token}"><p>Criar Nova Senha</p></a>
+    //             <hr />
+    //             <p>O link vai espirar em 60 minutes.</p>
+    //             </body>
+    //           </html>
+    //         `,
+    //       },
+    //       Text: {
+    //         Charset: "UTF-8",
+    //         Data: "Clinicus - Email de Recuperação de Senha",
+    //       },
+    //     },
+    //     Subject: {
+    //       Charset: "UTF-8",
+    //       Data: "Clinicus - Email de Recuperação de Senha",
+    //     },
+    //   },
+    //   Source: "00.braian.dev@gmail.com",
+    // };
+
+    // const sendEmail = ses.sendEmail(params).promise();
+
+    // sendEmail
+    //   .then((data) => {
+    //     console.log("/////");
+    //     console.log("AWS SES email submitted with success!", data);
+    //     console.log("/////");
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    // 
+    // 
 
     user.updateOne({ resetPasswordToken: token }, (err, success) => {
       if (err) {
@@ -222,6 +287,7 @@ router.post("/password/reset", async (req, res) => {
             });
           })
           .catch(err => {
+            console.log(err)
             return res.json({ result: "error", message: err.message });
           });
       }
@@ -233,15 +299,16 @@ router.post("/password/reset", async (req, res) => {
 router.put("/password/reset", async (req, res) => {
   const { password } = req.body;
   let resetPasswordToken = req.query.token;
+  console.log(resetPasswordToken, "AQUI")
   if (resetPasswordToken) {
     jsonwebtoken.verify(
       resetPasswordToken,
       "process.env.JWT_RESET_PASSWORD",
-      function(err, decoded) {
+      function (err, decoded) {
         if (err) {
           return res.json({
             result: "error",
-            message: "Expired link. Try again"
+            message: "Expired link. Try again",
           });
         }
       }
@@ -249,21 +316,21 @@ router.put("/password/reset", async (req, res) => {
     let encrypt_pass = await bcrypt.hash(password, 8);
     let updatedFields = {
       password: encrypt_pass,
-      resetPasswordToken: ""
+      resetPasswordToken: "",
     };
     await Users.findOneAndUpdate(
       { resetPasswordToken: resetPasswordToken },
       updatedFields
-    ).then(responses => {
+    ).then((responses) => {
       return res.json({
         result: "success",
-        message: "Password update succesfully your can try login again"
+        message: "Password update succesfully your can try login again",
       });
     });
   } else {
     return res.json({
       result: "error",
-      message: "No Found Token"
+      message: "No Found Token",
     });
   }
 });
