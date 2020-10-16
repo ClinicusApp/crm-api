@@ -9,7 +9,7 @@ const Users = require("../models/user_schema");
 const jwt = require("../utils/jwt");
 
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // const AWS = require("aws-sdk");
 // AWS.config.loadFromPath(".aws/credentials.json");
@@ -20,10 +20,17 @@ router.get("/", (req, res) => {
 });
 
 // Get User
-router.get("/profile/id/:id", (req, res) => {
-  let doc = Users.findOne({ _id: req.params.id });
-  res.json(doc);
-  res.send("Wellcome");
+router.get("/profile/id/:id", async (req, res) => {
+  try {
+    let data = await Users.findById(req.params.id);
+    res.json({
+      result: "success",
+      message: "Fetch Single data Successfully",
+      data: data
+    });
+  } catch (err) {
+    res.json({ result: "error", message: err });
+  }
 });
 
 // Loging a User
@@ -202,7 +209,6 @@ router.post("/password/reset", async (req, res) => {
 
     console.log(token, "token");
 
-
     const emailData = {
       from: "clinicus.suporte@gmail.com",
       to: email,
@@ -215,7 +221,6 @@ router.post("/password/reset", async (req, res) => {
 
             `,
     };
-
 
     // AWS Transactional Email
     // const ses = new AWS.SES({ apiVersion: "2010-12-01" });
@@ -267,27 +272,27 @@ router.post("/password/reset", async (req, res) => {
     //   .catch((error) => {
     //     console.log(error);
     //   });
-    // 
-    // 
+    //
+    //
 
     user.updateOne({ resetPasswordToken: token }, (err, success) => {
       if (err) {
         console.log("RESET PASSWORD LINK ERROR", err);
         return res.status(400).json({
           result: "error",
-          message: "Database connection error on user password forgot request"
+          message: "Database connection error on user password forgot request",
         });
       } else {
         sgMail
           .send(emailData)
-          .then(response => {
+          .then((response) => {
             return res.json({
               result: "success",
-              message: `Email has been sent to ${email}. Follow the instruction to activate your account`
+              message: `Email has been sent to ${email}. Follow the instruction to activate your account`,
             });
           })
-          .catch(err => {
-            console.log(err)
+          .catch((err) => {
+            console.log(err);
             return res.json({ result: "error", message: err.message });
           });
       }
@@ -299,7 +304,7 @@ router.post("/password/reset", async (req, res) => {
 router.put("/password/reset", async (req, res) => {
   const { password } = req.body;
   let resetPasswordToken = req.query.token;
-  console.log(resetPasswordToken, "AQUI")
+  console.log(resetPasswordToken, "AQUI");
   if (resetPasswordToken) {
     jsonwebtoken.verify(
       resetPasswordToken,

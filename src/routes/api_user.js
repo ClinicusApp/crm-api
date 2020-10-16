@@ -34,19 +34,19 @@ router.get("/fetchUser/:level", async (req, res) => {
 // });
 
 // Find By Level Users
-router.get("/fetchUser/:level", async (req, res) => {
-  try {
-    let data = User.find({ _id: req.params.level });
-    res.json({
-      result: "success",
-      message: "Fetch Single data Successfully",
-      data: data,
-      reqParams: req.params,
-    });
-  } catch (err) {
-    res.json({ result: "error", message: err.msg });
-  }
-});
+// router.get("/fetchUser/:level", async (req, res) => {
+//   try {
+//     let data = User.find({ _id: req.params.level });
+//     res.json({
+//       result: "success",
+//       message: "Fetch Single data Successfully",
+//       data: data,
+//       reqParams: req.params,
+//     });
+//   } catch (err) {
+//     res.json({ result: "error", message: err.msg });
+//   }
+// });
 
 
 // Then Update
