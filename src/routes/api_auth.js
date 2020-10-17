@@ -288,7 +288,7 @@ router.post("/password/reset", async (req, res) => {
           .then((response) => {
             return res.json({
               result: "success",
-              message: `Email has been sent to ${email}. Follow the instruction to activate your account`,
+              message: `Email enviado para ${email}. Siga as instruções para recuperação de senha.`,
             });
           })
           .catch((err) => {
