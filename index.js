@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Cors Configuration
-var allowedOrigins = ['https://beclinicus.vercel.app', 'http://localhost:3000', 'http://localhost:3001',  
+var allowedOrigins = ['https://crm-web-mvp-qdj0u3tfx.vercel.app','https://beclinicus.vercel.app', 'http://localhost:3000', 'http://localhost:3001',  
                       process.env.PROJECT_URL];
 app.use(cors({
   origin: function(origin, callback){
