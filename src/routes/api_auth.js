@@ -41,13 +41,27 @@ router.post("/login", async (req, res) => {
       if (doc.status != "not_activated") {
         const payload = {
           id: doc._id,
+          first_name: doc.first_name,
+          last_name: doc.last_name,
+          phone: doc.phone,
+          address: doc.address,
+          status: doc.status,
+          activated_token: doc.activated_token,
+          resetPasswordToken: doc.resetPasswordToken,
           level: doc.level,
+          RG: doc.RG,
+          CPF: doc.CPF,
+          CRP: doc.CRP,
+          description: doc.description,
+          username: doc.username,
           email: doc.email,
+          password: doc.password,
+          created: doc.created
         };
 
         let token = jwt.sign(payload);
         console.log(token);
-        res.json({ result: "success", token, message: "Login successfully" });
+        res.json({ result: "success", token, message: "Login com Sucesso", doc });
       } else {
         return res.json({
           result: "error",
@@ -56,13 +70,13 @@ router.post("/login", async (req, res) => {
       }
     } else {
       // Invalid password
-      res.json({ result: "error", message: "Invalid password" });
+      res.json({ result: "error", message: "Senha Errada" });
     }
   } else {
     // Invalid username
     res.json({
       result: "error",
-      message: "Invalid username",
+      message: "Email Errado ou Não Cadastrado",
       sended: req.body,
     });
   }
